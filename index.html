@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>أذكار الصباح والمساء</title>
+
+  <style>
+    :root{
+      --bg: #04160e;
+      --card: #062116;
+      --text: #e9fff5;
+      --muted: #bfe9d7;
+      --border: rgba(233,255,245,.12);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 50% -10%, rgba(46, 255, 185, .12), transparent 60%),
+                  radial-gradient(900px 700px at 10% 10%, rgba(46, 255, 185, .08), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    .wrap{
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 18px 14px 26px;
+    }
+
+    header{
+      text-align: center;
+      margin: 8px 0 16px;
+    }
+
+    header h1{
+      margin: 0;
+      font-size: 20px;
+    }
+
+    header p{
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      margin: 12px 0;
+    }
+
+    .title{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .title h2{
+      margin:0;
+      font-size: 18px;
+    }
+
+    img{
+      width: 100%;
+      height: auto;
+      display:block;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.18);
+    }
+
+    footer{
+      text-align:center;
+      font-size:16px;
+      margin-top:20px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <h1>الأذكار</h1>
+      <p id="timeLabel"></p>
+    </header>
+
+    <div id="sections"></div>
+
+    <footer>
+      أحبك ❤️
+    </footer>
+
+  </div>
+
+  <template id="morningTpl">
+    <section class="card">
+      <div class="title">
+        <h2>أذكار الصباح</h2>
+      </div>
+      <img src="images/morning.jpg" alt="أذكار الصباح">
+    </section>
+  </template>
+
+  <template id="eveningTpl">
+    <section class="card">
+      <div class="title">
+        <h2>أذكار المساء</h2>
+      </div>
+      <img src="images/evening.jpg" alt="أذكار المساء">
+    </section>
+  </template>
+
+  <script>
+    const sectionsEl = document.getElementById("sections");
+    const timeLabel = document.getElementById("timeLabel");
+
+    function format12h(d){
+      const h = d.getHours();
+      const m = d.getMinutes().toString().padStart(2, "0");
+      const ampm = h >= 12 ? "PM" : "AM";
+      const hh = (h % 12) || 12;
+      return `${hh}:${m} ${ampm}`;
+    }
+
+    function getMode(d){
+      return d.getHours() >= 12 ? "evening-first" : "morning-first";
+    }
+
+    function render(){
+      const now = new Date();
+      timeLabel.textContent = `الوقت الآن: ${format12h(now)}`;
+      sectionsEl.innerHTML = "";
+
+      const morningNode = document.getElementById("morningTpl").content.cloneNode(true);
+      const eveningNode = document.getElementById("eveningTpl").content.cloneNode(true);
+
+      if (getMode(now) === "evening-first"){
+        sectionsEl.appendChild(eveningNode);
+        sectionsEl.appendChild(morningNode);
+      } else {
+        sectionsEl.appendChild(morningNode);
+        sectionsEl.appendChild(eveningNode);
+      }
+    }
+
+    render();
+
+    setInterval(() => {
+      render();
+    }, 60000);
+  </script>
+
+</body>
+</html>
